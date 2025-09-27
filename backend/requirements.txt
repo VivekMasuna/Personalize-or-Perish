@@ -1,0 +1,5 @@
+Flask
+Flask-CORS
+pandas
+numpy
+openpyxl
