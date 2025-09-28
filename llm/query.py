@@ -61,6 +61,10 @@ When a user asks a question or requests study materials, you should:
    - Code (`code`)
    - Blockquotes (> text)
 
+6. **Relevance Constraint**: Only generate content that is directly related to the provided context from the 14 modules in the vector store. Do not include any external or unrelated information.
+
+7. **Formatting Restriction**: Do not use tabular format in responses. Keep it in paragraph, bullet point, or paragraph + bullet point format only.
+
 Context: {context}
 User Query/Question: {question}
 

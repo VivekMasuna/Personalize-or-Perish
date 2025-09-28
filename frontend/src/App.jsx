@@ -4,9 +4,10 @@ import HomePage from './components/HomePage'
 import FileUpload from './components/FileUpload'
 import Dashboard from './components/Dashboard'
 import Dashboard2 from './components/Dashboard2'
+import Dashboard3 from './components/Dashboard3'
 
 function App() {
-  const [currentView, setCurrentView] = useState('home') // 'home', 'upload', 'dashboard', 'support-materials'
+  const [currentView, setCurrentView] = useState('home') // 'home', 'upload', 'dashboard', 'support-materials', 'learning-journey'
   const [analysisData, setAnalysisData] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -94,6 +95,25 @@ function App() {
             </header>
             <main className="app-main">
               <Dashboard2 />
+            </main>
+          </div>
+        )
+      case 'learning-journey':
+        return (
+          <div className="app">
+            <header className="app-header">
+              <div className="header-content">
+                <button className="back-button" onClick={handleBackToHome}>
+                  ← Back to Home
+                </button>
+                <div className="header-text">
+                  <h1>Student's Learning Journey</h1>
+                  <p>Track individual student progress and analyze learning patterns</p>
+                </div>
+              </div>
+            </header>
+            <main className="app-main">
+              <Dashboard3 />
             </main>
           </div>
         )

@@ -9,6 +9,8 @@ const HomePage = ({ onNavigate }) => {
       onNavigate('upload')
     } else if (feature === 'support-materials') {
       onNavigate('support-materials')
+    } else if (feature === 'learning-journey') {
+      onNavigate('learning-journey')
     } else {
       // For future implementation
       alert(`${feature} feature is coming soon!`)

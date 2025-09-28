@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import os
 import uuid
@@ -7,8 +7,27 @@ from learningGaps import analyze_and_export
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "llm")))
 import query
 
+import pandas as pd
+import re
+from io import BytesIO
+
 app = Flask(__name__)
 CORS(app)  # Enable CORS for React frontend
+
+# A simple in-memory cache to store data between analysis and download
+DATA_CACHE = {}
+
+# Helper functions from analysis_ui.py
+def natural_sort_key(s):
+    return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', s)]
+
+def to_multisheet_excel(sheets):
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        for sheet_name, df in sheets.items():
+            df.to_excel(writer, sheet_name=sheet_name, index=False)
+    return output.getvalue()
+
 
 # Create uploads directory if it doesn't exist
 UPLOAD_FOLDER = 'uploads'
@@ -116,6 +135,77 @@ def query_api():
         error_msg = f'Server error: {str(e)}\nTraceback: {traceback.format_exc()}'
         print(error_msg)
         return jsonify({"error": "Internal server error"}), 500
+
+@app.route('/api/analyze', methods=['POST'])
+def analyze_performance_data():
+    """
+    Handles the file upload and analysis for the performance dashboard.
+    This is separate from your existing '/upload' route.
+    """
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part in the request"}), 400
+    file = request.files['file']
+    if not file or file.filename == '':
+        return jsonify({"error": "No file selected"}), 400
+
+    try:
+        # Read the file directly into pandas from memory
+        df_raw = pd.read_excel(file)
+
+        # All data processing logic from analysis_ui.py goes here
+        df_all_data = df_raw[['login_id', 'activity_name', 'self learning seconds', 'attendance', 'attempt_number', 'calculated_score', 'total_marks']].copy()
+        df_all_data.rename(columns={
+            'self learning seconds': 'Self Learning Seconds', 'attempt_number': 'Attempt No',
+            'calculated_score': 'Calculated Score', 'total_marks': 'Total Score'
+        }, inplace=True)
+        df_all_data['Self Learning Hours'] = df_all_data['Self Learning Seconds'] / 3600
+        numeric_cols = ['Attempt No', 'Calculated Score', 'Total Score', 'Self Learning Hours']
+        for col in numeric_cols:
+            df_all_data[col] = pd.to_numeric(df_all_data[col], errors='coerce')
+        df_all_data.dropna(subset=numeric_cols, inplace=True)
+        df_user_summary = df_raw.groupby('login_id').agg(
+            total_self_learning_seconds=('self learning seconds', 'sum'),
+            total_attempts=('attempt_number', 'sum'),
+            total_calculated_score=('calculated_score', 'sum'),
+            total_marks=('total_marks', 'sum')
+        ).reset_index()
+
+        df_model_scores = df_raw.pivot_table(index='login_id', columns='activity_name', values='calculated_score', aggfunc='max').reset_index()
+
+        session_id = str(uuid.uuid4())
+        DATA_CACHE[session_id] = {
+            'All_Data': df_all_data,
+            'User_Summary': df_user_summary,
+            'All_Model_Scores': df_model_scores
+        }
+
+        overall_learning_time = df_all_data.groupby('activity_name')['Self Learning Hours'].sum().reset_index()
+        overall_chart_data = overall_learning_time.sort_values(by='Self Learning Hours', ascending=False)
+        
+        return jsonify({
+            "session_id": session_id,
+            "student_ids": sorted(df_all_data['login_id'].unique()),
+            "all_student_data": df_all_data.to_dict(orient='records'),
+            "overall_learning_chart": overall_chart_data.to_dict(orient='records')
+        })
+
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+@app.route('/api/download/<session_id>', methods=['GET'])
+def download_performance_report(session_id):
+    """ Serves the generated multi-sheet Excel file. """
+    if session_id not in DATA_CACHE:
+        return "Report not found or session expired.", 404
+
+    excel_data_bytes = to_multisheet_excel(DATA_CACHE.pop(session_id)) # Pop removes the item after getting it
+
+    return send_file(
+        BytesIO(excel_data_bytes),
+        as_attachment=True,
+        download_name="NEW_report.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 
 @app.route("/health")
 def health():
