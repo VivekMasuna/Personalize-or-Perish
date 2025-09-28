@@ -1,0 +1,11 @@
+Flask
+Flask-CORS
+pandas
+numpy
+openpyxl
+python-dotenv
+langchain
+langchain-community
+langchain-groq
+langchain-ollama
+chromadb
