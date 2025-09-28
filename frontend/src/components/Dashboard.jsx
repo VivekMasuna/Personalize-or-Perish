@@ -747,19 +747,13 @@ const Dashboard = ({ data, onReset }) => {
 
                 <div className="chart-container">
                   <h3 className="chart-title">Student {selectedStudent} Weak Questions Details</h3>
-                  <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                  <div className="weak-questions-details" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                     {studentWeakQuestions.map((q, index) => (
-                      <div key={q.questionId} style={{
-                        padding: '1rem',
-                        margin: '0.5rem 0',
-                        background: '#fef2f2',
-                        borderRadius: '8px',
-                        border: '1px solid #fecaca'
-                      }}>
-                        <h4 style={{ color: '#dc2626', marginBottom: '0.5rem', fontSize: '1rem' }}>
+                      <div key={q.questionId} className="weak-question-item">
+                        <h4 className="weak-question-title">
                           Question {q.questionId} - {q.accuracy}% Accuracy
                         </h4>
-                        <p style={{ color: '#374151', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+                        <p className="weak-question-text">
                           {q.questionText}
                         </p>
                       </div>
@@ -846,22 +840,16 @@ const Dashboard = ({ data, onReset }) => {
         {/* Detailed Weak Questions */}
         <div className="chart-container">
           <h3 className="chart-title">Weak Questions Details</h3>
-          <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          <div className="weak-questions-details" style={{ maxHeight: '400px', overflowY: 'auto' }}>
             {cohortWeakQuestions.map((q, index) => (
-              <div key={q.questionId} style={{
-                padding: '1rem',
-                margin: '0.5rem 0',
-                background: '#fef2f2',
-                borderRadius: '8px',
-                border: '1px solid #fecaca'
-              }}>
-                <h4 style={{ color: '#dc2626', marginBottom: '0.5rem', fontSize: '1rem' }}>
+              <div key={q.questionId} className="weak-question-item">
+                <h4 className="weak-question-title">
                   Question {q.questionId} - {q.accuracy}% Accuracy
                 </h4>
-                <p style={{ color: '#374151', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+                <p className="weak-question-text">
                   {q.questionText}
                 </p>
-                <small style={{ color: '#6b7280' }}>
+                <small className="weak-question-meta">
                   {q.studentsAttempted} students attempted
                 </small>
               </div>
