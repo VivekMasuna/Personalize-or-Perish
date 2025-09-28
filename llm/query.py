@@ -61,6 +61,8 @@ When a user asks a question or requests study materials, you should:
    - Code (`code`)
    - Blockquotes (> text)
 
+6. Dont use tabular format for response, keep it in paragraph, bullet point or paragraph and bullet point format only.
+
 Context: {context}
 User Query/Question: {question}
 
