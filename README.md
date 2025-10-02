@@ -1,15 +1,3 @@
-# Learning Gaps Analysis Dashboard
-
-A comprehensive dashboard for analyzing student learning gaps from Excel assessment data. Built with React frontend and Flask backend.
-
-## Features
-
-- **File Upload**: Drag & drop Excel file upload with validation
-- **Real-time Analysis**: Automatic processing of student assessment data
-- **Interactive Visualizations**: Multiple chart types for different analysis perspectives
-- **Modern UI**: Clean, responsive design with gradient backgrounds and smooth animations
-- **Comprehensive Reports**: Cohort-level and individual student analysis
-
 ## Dashboard Features
 
 ### 1. Learning Gaps Analysis Dashboard
