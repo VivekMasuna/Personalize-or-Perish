@@ -1,3 +1,9 @@
+## 🔗 Project Links
+
+- **Demo Video**: [Watch here](https://drive.google.com/file/d/1ukZno1Z5KC8AfFZYDWNC3PmhNvm3ZR7e/view?usp=drive_link)
+- **Problem Statement**: [Access here](https://drive.google.com/file/d/16dYKi0u5i3H1zKgWCli4-Ls-ifgJRdoi/view?usp=sharing)
+- **Project Presentation**: [Access here](https://drive.google.com/file/d/1HIZBTps1Nx9_lmjPCSG42Jhs9jbXjTg-/view?usp=drive_link)
+
 ## Dashboard Features
 
 ### 1. Learning Gaps Analysis Dashboard
